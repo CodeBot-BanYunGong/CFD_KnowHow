@@ -44,4 +44,5 @@ $$[ q''i = h{int,i}(T_{g,i}-T_{wall,i})+\varepsilon\sigma(T_{g,i}^4-T_{wall,i}^4
 适合排气前段、催化器包热处易出现 400–600 °C hotspot 的精细估计。
 ---
 
-![Conjugate Heat Transfer (CHT)](img.png)
+
+<img width="1405" height="639" alt="image" src="https://github.com/user-attachments/assets/c7dc7a8f-4464-4811-b22a-b786a5c0c083" />
