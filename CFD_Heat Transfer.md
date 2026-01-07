@@ -46,3 +46,66 @@ $$[ q''i = h{int,i}(T_{g,i}-T_{wall,i})+\varepsilon\sigma(T_{g,i}^4-T_{wall,i}^4
 
 
 <img width="1405" height="639" alt="image" src="https://github.com/user-attachments/assets/c7dc7a8f-4464-4811-b22a-b786a5c0c083" />
+
+## **STAR-CCM+** 是如何计算热传递数值的，以及最重要的——**正负号的定义**。
+
+### 1. 核心公式与物理含义
+> **原文：** $q = \int \dot{q}" \cdot da = \sum_f \dot{q}_f" \cdot a_f$
+
+这是积分形式和离散形式（CFD网格求和）的热通量公式。
+*   **$\dot{q}_f"$ (Face heat flux vector)**：热流密度矢量。代表热量流动的真实方向和强度。
+*   **$a_f$ (Face area vector)**：面面积矢量。在CFD中，边界面的面积矢量**永远指向计算域的外部**（即垂直于表面向外）。
+*   **$\cdot$ (点积)**：这是关键！结果的正负取决于这两个箭头的夹角。
+
+### 2. 正负号的定义（最重要的一点！）
+> **原文：** "The heat transfer report returns a positive value when heat flows from the medium in any region towards its boundary; that is, the direction of heat flow and the direction of boundary normal are the same."
+
+**翻译：**
+当热量从介质（计算域内部）流向其边界（外部）时，热传递报告返回**正值 (+)**；也就是说，热流的方向与边界法向量的方向**相同**。
+
+**深度解读：**
+这个定义遵循的是数学上的 **“散度定理”** 逻辑（Outflow is Positive）。
+
+*   **情形 A：热量流出（冷却）**
+    *   **物理现象**：流体比壁面热，热量往外跑。
+    *   **方向**：热流向外，法向量也向外。
+    *   **数学**：方向相同 $\rightarrow$ 夹角 $0^\circ$ $\rightarrow$ $\cos(0)=1$。
+    *   **结果**：**正值 (+)**。
+    *   **结论：在这个软件里，正数代表热量损失（Heat Loss/Outflow）。**
+
+*   **情形 B：热量流入（加热）**
+    *   **物理现象**：壁面比流体热，热量往里钻。
+    *   **方向**：热流向里，法向量向外。
+    *   **数学**：方向相反 $\rightarrow$ 夹角 $180^\circ$ $\rightarrow$ $\cos(180)=-1$。
+    *   **结果**：**负值 (-)**。
+    *   **结论：在这个软件里，负数代表热量获得（Heat Gain/Inflow）。**
+
+**注意：** 这与我上一条回答中提到的某些软件（如Fluent默认报告）的“直觉定义”是**相反**的。**请务必以你这段文档为准！**
+
+### 3. 局部计算功能
+> **原文：** "It is possible to calculate the heat passing through a portion of a boundary by creating a boundary threshold derived part..."
+
+**解读：**
+如果你只想看一个大面上某一块区域的热流（比如只想看温度超过100度的那些区域散热多少），你可以创建一个 **Derived Part（衍生零部件）**，利用 **Threshold（阈值）** 功能截取一部分网格，然后对这个衍生部件做报告。
+
+### 4. 瞬态/谐波平衡
+> **原文：** "For harmonic balance cases, the reported heat transfer is a time-mean."
+
+**解读：**
+如果你做的是**谐波平衡**（Harmonic Balance，一种用于旋转机械或周期性流动的快速非定常算法），报告出来的数值是一个**时间平均值**，而不是某一瞬间的值。
+
+---
+
+### 总结：如何根据这段话判断方向？
+
+根据这段文档，你在软件中看到的数据含义如下：
+
+1.  **正值 (+)** = **Heat Leaving the Domain**
+    *   热量从流体跑出去了。
+    *   流体在**放热**（被冷却）。
+    *   矢量方向：热流方向与法向量方向**相同**（都向外）。
+
+2.  **负值 (-)** = **Heat Entering the Domain**
+    *   热量进入流体了。
+    *   流体在**吸热**（被加热）。
+    *   矢量方向：热流方向与法向量方向**相反**（热流向里，法向量向外）。
