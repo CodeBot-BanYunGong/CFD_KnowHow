@@ -152,7 +152,7 @@ $$R_{th,cond} = \frac{L}{k \cdot A}$$
 **(b) 对流热阻（Convection）** —— 固体与流体交界面
 $$R_{th,conv} = \frac{1}{h \cdot A}$$
 - $$h$$：对流换热系数（W/(m²·K)），自然对流小、强制对流（风冷/水冷）大
-- $$A$$：散热表面积，越大阻力越小（这正是我们之前分析"5面并联散热"问题的关键）
+- $$A$$：散热表面积越大, 阻力越小
 
 **(c) 辐射热阻（Radiation）**
 $$Q_{rad} = \varepsilon \sigma A (T_s^4 - T_{amb}^4)$$
